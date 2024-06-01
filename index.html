@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petroleum Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+    <style >
+        body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background-color: #ffffff;
+    padding: 20px 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.result {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.result h2 {
+    margin-bottom: 10px;
+}
+
+.result p {
+    font-size: 18px;
+    color: #333;
+}
+
+#status {
+    font-weight: bold;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Petroleum Calculator</h1>
+        <form id="petroleum-form">
+            <div class="form-group">
+                <label for="close-meter">Close Meter (L)</label>
+                <input type="number" id="close-meter" name="close-meter" required>
+            </div>
+            <div class="form-group">
+                <label for="open-meter">Open Meter (L)</label>
+                <input type="number" id="open-meter" name="open-meter" required>
+            </div>
+            <div class="form-group">
+                <label for="price-per-liter">Price per Liter (₦)</label>
+                <input type="number" id="price-per-liter" name="price-per-liter" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="expense">Expense (₦)</label>
+                <input type="number" id="expense" name="expense" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="pos">POS (₦)</label>
+                <input type="number" id="pos" name="pos" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="cash-at-hand">Cash at Hand (₦)</label>
+                <input type="number" id="cash-at-hand" name="cash-at-hand" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="total-droppings">Total Droppings (₦)</label>
+                <input type="number" id="total-droppings" name="total-droppings" step="0.01" required>
+            </div>
+            <button type="button" onclick="calculateTotal()">Calculate</button>
+        </form>
+        <div class="result">
+            <h2>Result</h2>
+            <p id="total-liters"></p>
+            <p id="total-sales"></p>
+            <p id="total-revenue"></p>
+            <p id="status"></p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <script >
+        function calculateTotal() {
+    const closeMeter = parseFloat(document.getElementById('close-meter').value);
+    const openMeter = parseFloat(document.getElementById('open-meter').value);
+    const pricePerLiter = parseFloat(document.getElementById('price-per-liter').value);
+    const expense = parseFloat(document.getElementById('expense').value);
+    const pos = parseFloat(document.getElementById('pos').value);
+    const cashAtHand = parseFloat(document.getElementById('cash-at-hand').value);
+    const totalDroppings = parseFloat(document.getElementById('total-droppings').value);
+
+    if (isNaN(closeMeter) || isNaN(openMeter) || isNaN(pricePerLiter) || isNaN(expense) || isNaN(pos) || isNaN(cashAtHand) || isNaN(totalDroppings)) {
+        alert('Please fill in all fields');
+        return;
+    }
+
+    const totalLiters = closeMeter - openMeter;
+    const totalSales = totalLiters * pricePerLiter;
+    const totalRevenue = totalSales + pos - totalDroppings;
+    const finalBalance = totalRevenue + cashAtHand - expense;
+
+    document.getElementById('total-liters').textContent = `Total Liters: ${totalLiters.toFixed(2)} L`;
+    document.getElementById('total-sales').textContent = `Total Sales: ₦${totalSales.toFixed(2)}`;
+    document.getElementById('total-revenue').textContent = `Total Revenue: ₦${finalBalance.toFixed(2)}`;
+
+    let statusMessage;
+    if (finalBalance > 0) {
+        statusMessage = "Profit";
+        document.getElementById('status').style.color = "green";
+    } else if (finalBalance < 0) {
+        statusMessage = "Loss";
+        document.getElementById('status').style.color = "red";
+    } else {
+        statusMessage = "Account is balanced";
+        document.getElementById('status').style.color = "blue";
+    }
+    document.getElementById('status').textContent = statusMessage;
+}
+
+    </script>
+</body>
+</html>
