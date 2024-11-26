@@ -1,220 +1,268 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Airtime Credit Payment</title>
-    <style>
-        /* Global Styles */
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #72EDF2 10%, #5151E5 100%);
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        /* Container Styles */
-        .container {
-            background-color: #fff;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 320px;
-            text-align: center;
-        }
-
-        /* Header Styles */
-        h1 {
-            margin-bottom: 20px;
-            font-size: 24px;
-            color: #333;
-        }
-
-        /* Form Group Styles */
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #555;
-        }
-
-        input[type="tel"],
-        select {
-            width: 100%;
-            padding: 12px 15px;
-            margin: 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
-            font-size: 16px;
-            color: #555;
-            transition: border-color 0.3s ease;
-        }
-
-        input[type="tel"]:focus,
-        select:focus {
-            border-color: #5151E5;
-            outline: none;
-        }
-
-        /* Button Styles */
-        button {
-            background-color: #5151E5;
-            color: #fff;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            width: 100%;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #3d3db3;
-        }
-
-        /* Receipt Styles */
-        .receipt,
-        .error {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-            text-align: left;
-        }
-
-        .receipt h2 {
-            color: #28a745;
-            margin-bottom: 20px;
-        }
-
-        .error h2 {
-            color: #dc3545;
-            margin-bottom: 20px;
-        }
-
-        .receipt p,
-        .error p {
-            margin: 5px 0;
-            color: #333;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile</title>
+  <style>
+    /* Add your styling here (same as before)... */
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Airtime Credit Payment</h1>
-        <form id="payment-form">
-            <div class="form-group">
-                <label for="provider">Network Provider:</label>
-                <select id="provider" name="provider" required>
-                    <option value="">Select provider</option>
-                    <option value="mtn">MTN</option>
-                    <option value="airtel">Airtel</option>
-                    <option value="glo">GLO</option>
-                    <option value="etisalat">Etisalat</option>
-                    <option value="other">Other</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="phone">Phone Number:</label>
-                <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
-            </div>
-            <div class="form-group">
-                <label for="currency">Currency:</label>
-                <select id="currency" name="currency" required>
-                    <option value="">Select currency</option>
-                    <option value="naira">Naira (₦)</option>
-                    <option value="dollar">Dollar ($)</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="amount">Amount:</label>
-                <select id="amount" name="amount" required>
-                    <option value="">Select amount</option>
-                    <option data-currency="naira" value="500">₦500</option>
-                    <option data-currency="naira" value="1000">₦1,000</option>
-                    <option data-currency="naira" value="2000">₦2,000</option>
-                    <option data-currency="naira" value="5000">₦5,000</option>
-                    <option data-currency="dollar" value="5">$5</option>
-                    <option data-currency="dollar" value="10">$10</option>
-                    <option data-currency="dollar" value="20">$20</option>
-                    <option data-currency="dollar" value="50">$50</option>
-                </select>
-            </div>
-            <button type="submit">Submit Payment</button>
-        </form>
-        <div id="receipt" class="receipt" style="display: none;">
-            <h2>Payment Successful</h2>
-            <p><strong>Provider:</strong> <span id="receipt-provider"></span></p>
-            <p><strong>Phone Number:</strong> <span id="receipt-phone"></span></p>
-            <p><strong>Currency:</strong> <span id="receipt-currency"></span></p>
-            <p><strong>Amount:</strong> <span id="receipt-amount"></span></p>
-        </div>
-        <div id="error" class="error" style="display: none;">
-            <h2>Payment Failed</h2>
-            <p>There was an issue with your payment. Please try again.</p>
-        </div>
+  <div class="profile-container">
+    <!-- Header -->
+    <div class="profile-header">
+      <input type="file" id="profile-picture-input" accept="image/*" style="display: none;">
+      <img id="profile-picture" src="https://via.placeholder.com/150" alt="User Profile Picture" onclick="uploadPicture()">
+      <h1 id="profile-name">John Doe</h1>
+      <p id="profile-description">Full Stack Developer | Tech Enthusiast</p>
+      <button class="logout-button" onclick="logout()">Logout</button>
+      <span class="edit-icon" onclick="editProfile()">✏️</span>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const form = document.getElementById('payment-form');
-            const receipt = document.getElementById('receipt');
-            const error = document.getElementById('error');
-            const receiptProvider = document.getElementById('receipt-provider');
-            const receiptPhone = document.getElementById('receipt-phone');
-            const receiptCurrency = document.getElementById('receipt-currency');
-            const receiptAmount = document.getElementById('receipt-amount');
+    <!-- Body -->
+    <div class="profile-body">
+      <div class="info-card">
+        <h3>Contact Information</h3>
+        <p id="contact-info">Email: john.doe@example.com<br>Phone: +123-456-7890</p>
+        <span class="edit-icon" onclick="editCard('contact-info')">✏️</span>
+        <button onclick="redirectToContact()">Contact Us</button>
+      </div>
+      <div class="info-card">
+        <h3>About Me</h3>
+        <p id="about-me">Passionate developer with over 5 years of experience in building modern web applications.</p>
+        <span class="edit-icon" onclick="editCard('about-me')">✏️</span>
+      </div>
+      <div class="info-card">
+        <h3>Skills</h3>
+        <p id="skills">JavaScript, Python, React, Node.js, CSS, HTML, SQL</p>
+        <span class="edit-icon" onclick="editCard('skills')">✏️</span>
+      </div>
+      <div class="info-card">
+        <h3>Location</h3>
+        <p id="location">New York, USA</p>
+        <span class="edit-icon" onclick="editCard('location')">✏️</span>
+        <button onclick="redirectToPassword()">Change Passcode</button>
+      </div>
+    </div>
 
-            form.addEventListener('submit', async function (event) {
-                event.preventDefault();
+    <!-- Footer -->
+    <div class="profile-footer">
+      <p>© 2024 John Doe. All rights reserved.</p>
+    </div>
+  </div>
 
-                const provider = document.getElementById('provider').value;
-                const phone = document.getElementById('phone').value;
-                const currency = document.getElementById('currency').value;
-                const amount = document.getElementById('amount').value;
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <h3>Edit Information</h3>
+      <input type="text" id="modal-input" placeholder="Enter new value">
+      <button onclick="saveChanges()">Save</button>
+      <button onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
 
-                try {
-                    const response = await fetch('/process-payment', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ provider, phone, currency, amount })
-                    });
+  <!-- Firebase Setup -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 
-                    const result = await response.json();
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile</title>
+  <style>
+    /* Add your styling here (same as before)... */
+  </style>
+</head>
+<body>
+  <div class="profile-container">
+    <!-- Header -->
+    <div class="profile-header">
+      <input type="file" id="profile-picture-input" accept="image/*" style="display: none;">
+      <img id="profile-picture" src="https://via.placeholder.com/150" alt="User Profile Picture" onclick="uploadPicture()">
+      <h1 id="profile-name">John Doe</h1>
+      <p id="profile-description">Full Stack Developer | Tech Enthusiast</p>
+      <button class="logout-button" onclick="logout()">Logout</button>
+      <span class="edit-icon" onclick="editProfile()">✏️</span>
+    </div>
 
-                    if (result.success) {
-                        receiptProvider.textContent = provider.charAt(0).toUpperCase() + provider.slice(1);
-                        receiptPhone.textContent = phone;
-                        receiptCurrency.textContent = currency === 'naira' ? 'Naira (₦)' : 'Dollar ($)';
-                        receiptAmount.textContent = currency === 'naira' ? `₦${amount}` : `$${amount}`;
+    <!-- Body -->
+    <div class="profile-body">
+      <div class="info-card">
+        <h3>Contact Information</h3>
+        <p id="contact-info">Email: john.doe@example.com<br>Phone: +123-456-7890</p>
+        <span class="edit-icon" onclick="editCard('contact-info')">✏️</span>
+        <button onclick="redirectToContact()">Contact Us</button>
+      </div>
+      <div class="info-card">
+        <h3>About Me</h3>
+        <p id="about-me">Passionate developer with over 5 years of experience in building modern web applications.</p>
+        <span class="edit-icon" onclick="editCard('about-me')">✏️</span>
+      </div>
+      <div class="info-card">
+        <h3>Skills</h3>
+        <p id="skills">JavaScript, Python, React, Node.js, CSS, HTML, SQL</p>
+        <span class="edit-icon" onclick="editCard('skills')">✏️</span>
+      </div>
+      <div class="info-card">
+        <h3>Location</h3>
+        <p id="location">New York, USA</p>
+        <span class="edit-icon" onclick="editCard('location')">✏️</span>
+        <button onclick="redirectToPassword()">Change Passcode</button>
+      </div>
+    </div>
 
-                        form.style.display = 'none';
-                        error.style.display = 'none';
-                        receipt.style.display = 'block';
-                    } else {
-                        form.style.display = 'none';
-                        receipt.style.display = 'none';
-                        error.style.display = 'block';
-                    }
-                } catch (err) {
-                    form.style.display = 'none';
-                    receipt.style.display = 'none';
-                    error.style.display = 'block';
-                }
-            });
-        });
-    </script>
+    <!-- Footer -->
+    <div class="profile-footer">
+      <p>© 2024 John Doe. All rights reserved.</p>
+    </div>
+  </div>
 
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <h3>Edit Information</h3>
+      <input type="text" id="modal-input" placeholder="Enter new value">
+      <button onclick="saveChanges()">Save</button>
+      <button onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Firebase Setup -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBw_hJdW_4QIBajA5LJ78Wu1a0bTyyThI8",
+      authDomain: "techzone-c96c0.firebaseapp.com",
+      projectId: "techzone-c96c0",
+      storageBucket: "techzone-c96c0.firebasestorage.app",
+      messagingSenderId: "399698120752",
+      appId: "1:399698120752:web:40821d2140cd0d860a1df5",
+      measurementId: "G-Z7VFYH20LH"
+    };
+
+    let app, db;
+
+    try {
+      app = initializeApp(firebaseConfig);
+      db = getDatabase(app);
+      console.log("Firebase initialized successfully");
+    } catch (error) {
+      console.error("Firebase initialization failed:", error);
+      alert("Firebase failed to initialize. Some features may not work.");
+    }
+
+    function uploadPicture() {
+      document.getElementById("profile-picture-input").click();
+    }
+
+    document.getElementById("profile-picture-input").addEventListener("change", function (event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          document.getElementById("profile-picture").src = e.target.result;
+          alert("Picture uploaded successfully!");
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    function editCard(id) {
+      document.getElementById("modal-input").value = document.getElementById(id).textContent;
+      document.getElementById("modal").classList.add("active");
+      document.getElementById("modal-input").setAttribute("data-edit-id", id);
+    }
+
+    function saveChanges() {
+      const input = document.getElementById("modal-input");
+      const id = input.getAttribute("data-edit-id");
+      const newValue = input.value;
+
+      document.getElementById(id).textContent = newValue;
+
+      // Save changes to Firebase
+      if (db) {
+        const userRef = ref(db, "users/1");
+        set(userRef, { [id]: newValue }).catch(console.error);
+      }
+
+      closeModal();
+    }
+
+    function closeModal() {
+      document.getElementById("modal").classList.remove("active");
+    }
+
+    function logout() {
+      alert("Logging out...");
+      window.location.href = "login.html";
+    }
+
+    function redirectToContact() {
+      window.location.href = "contact.html";
+    }
+
+    function redirectToPassword() {
+      window.location.href = "password.html";
+    }
+  </script>
 </body>
 </html>
+￼Enter    const firebaseConfig = {
+      apiKey: "AIzaSyBw_hJdW_4QIBajA5LJ78Wu1a0bTyyThI8",
+      authDomain: "techzone-c96c0.firebaseapp.com",
+      projectId: "techzone-c96c0",
+      storageBucket: "techzone-c96c0.firebasestorage.app",
+      messagingSenderId: "399698120752",
+      appId: "1:399698120752:web:40821d2140cd0d860a1df5",
+      measurementId: "G-Z7VFYH20LH"
+    };
+
+    let app, db;
+
+    try {
+      app = initializeApp(firebaseConfig);
+      db = getDatabase(app);
+      console.log("Firebase initialized successfully");
+    } catch (error) {
+      console.error("Firebase initialization failed:", error);
+      alert("Firebase failed to initialize. Some features may not work.");
+    }
+
+    function uploadPicture() {
+      document.getElementById("profile-picture-input").click();
+    }
+
+    document.getElementById("profile-picture-input").addEventListener("change", function (event) {
+const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          document.getElementById("profile-picture").src = e.target.result;
+          alert("Picture uploaded successfully!");
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    function editCard(id) {
+      document.getElementById("modal-input").value = document.getElementById(id).textContent;
+      document.getElementById("modal").classList.add("active");
+      document.getElementById("modal-input").setAttribute("data-edit-id", id);
+    }
+
+    function saveChanges() {
+      const input = document.getElementById("modal-input");
+      const id = input.getAttribute("data-edit-id");
+      const newValue = input.value;
+
+      document.getElementById(id).textContent = newValue;
+
+      // Save changes to Firebase
+      if (db) {
