@@ -3,266 +3,263 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Profile</title>
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>QashOut - Get Paid for Your Insights</title>
   <style>
-    /* Add your styling here (same as before)... */
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Body styling */
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      color: #333;
+    }
+
+    /* Header styling */
+    header {
+      background: #4A90E2;
+      width: 100%;
+      padding: 20px 0;
+      text-align: center;
+      color: #fff;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: bold;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      margin-top: 5px;
+    }
+
+    /* Main container */
+    .container {
+      text-align: center;
+      width: 100%;
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      padding: 15px 30px;
+      margin: 15px 10px;
+      font-size: 1.2rem;
+      text-decoration: none;
+      color: white;
+      background-color: #4A90E2;
+      border-radius: 50px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #357ABD;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background-color: #555;
+    }
+
+    .btn-secondary:hover {
+      background-color: #333;
+    }
+
+    /* Why Choose Us Section */
+    .section {
+      text-align: center;
+      padding: 40px 20px;
+      background: white;
+      border-radius: 8px;
+      margin: 20px auto;
+      width: 100%;
+      max-width: 900px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .section h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #4A90E2;
+    }
+
+    .features {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .feature {
+      width: 200px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .feature h3 {
+      font-size: 1.3rem;
+      color: #333;
+      margin: 10px 0;
+    }
+
+    .feature p {
+      font-size: 1rem;
+      color: #666;
+    }
+
+    /* User Reviews Section */
+    .reviews {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .review {
+      background: white;
+      width: 250px;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .review h3 {
+      font-size: 1.5rem;
+      color: #4A90E2;
+      margin-bottom: 10px;
+    }
+
+    .review p {
+      font-size: 1rem;
+      color: #666;
+    }
+
+    .review .currency {
+      color: #4A90E2;
+    }
+
+    /* Footer */
+    footer {
+      background: #4A90E2;
+      color: white;
+      text-align: center;
+      padding: 15px 0;
+      margin-top: 30px;
+      width: 100%;
+    }
+
+    footer p {
+      font-size: 1rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .features {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .feature {
+        width: 100%;
+        margin-bottom: 20px;
+      }
+
+      .reviews {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="profile-container">
-    <!-- Header -->
-    <div class="profile-header">
-      <input type="file" id="profile-picture-input" accept="image/*" style="display: none;">
-      <img id="profile-picture" src="https://via.placeholder.com/150" alt="User Profile Picture" onclick="uploadPicture()">
-      <h1 id="profile-name">John Doe</h1>
-      <p id="profile-description">Full Stack Developer | Tech Enthusiast</p>
-      <button class="logout-button" onclick="logout()">Logout</button>
-      <span class="edit-icon" onclick="editProfile()">✏️</span>
-    </div>
 
-    <!-- Body -->
-    <div class="profile-body">
-      <div class="info-card">
-        <h3>Contact Information</h3>
-        <p id="contact-info">Email: john.doe@example.com<br>Phone: +123-456-7890</p>
-        <span class="edit-icon" onclick="editCard('contact-info')">✏️</span>
-        <button onclick="redirectToContact()">Contact Us</button>
-      </div>
-      <div class="info-card">
-        <h3>About Me</h3>
-        <p id="about-me">Passionate developer with over 5 years of experience in building modern web applications.</p>
-        <span class="edit-icon" onclick="editCard('about-me')">✏️</span>
-      </div>
-      <div class="info-card">
-        <h3>Skills</h3>
-        <p id="skills">JavaScript, Python, React, Node.js, CSS, HTML, SQL</p>
-        <span class="edit-icon" onclick="editCard('skills')">✏️</span>
-      </div>
-      <div class="info-card">
-        <h3>Location</h3>
-        <p id="location">New York, USA</p>
-        <span class="edit-icon" onclick="editCard('location')">✏️</span>
-        <button onclick="redirectToPassword()">Change Passcode</button>
-      </div>
-    </div>
+  <!-- Header -->
+  <header>
+    <h1>Welcome to QashOut</h1>
+    <p>Your Trusted Platform to Earn Money by Answering Questions For Free</p>
+  </header>
 
-    <!-- Footer -->
-    <div class="profile-footer">
-      <p>© 2024 John Doe. All rights reserved.</p>
+  <!-- Main Container -->
+  <div class="container">
+    <p>Earn between ₦50 and ₦100 for every question you answer! Join our platform to make money while sharing your knowledge.</p>
+    <a href="login.html" class="btn">Get Started</a>
+    <a href="support.html" class="btn btn-secondary">Support</a>
+  </div>
+
+  <!-- Why Choose Us Section -->
+  <div class="section">
+    <h2>Why Choose QashOut?</h2>
+    <div class="features">
+      <div class="feature">
+        <h3>Earn Instantly</h3>
+        <p>Get paid instantly after answering questions. No delays!</p>
+      </div>
+      <div class="feature">
+        <h3>Flexible</h3>
+        <p>Answer questions anytime, anywhere, at your convenience.</p>
+      </div>
+      <div class="feature">
+        <h3>Trusted Platform</h3>
+        <p>We’ve paid thousands of users. Join the community today!</p>
+      </div>
     </div>
   </div>
 
-  <!-- Modal -->
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <h3>Edit Information</h3>
-      <input type="text" id="modal-input" placeholder="Enter new value">
-      <button onclick="saveChanges()">Save</button>
-      <button onclick="closeModal()">Cancel</button>
+  <!-- About Section -->
+  <div class="section">
+    <h2>About QashOut</h2>
+    <p>At QashOut, we believe in rewarding knowledge. Our platform allows users to answer simple questions and get paid instantly in Naira. We’re dedicated to creating a reliable, flexible, and rewarding space for all our users.</p>
+  </div>
+
+  <!-- User Reviews Section -->
+  <div class="section">
+    <h2>What Our Users Say</h2>
+    <div class="reviews">
+      <div class="review">
+        <h3>John Deere.</h3>
+        <p>"This platform is fantastic! I’ve earned money consistently. Totally legit!"</p>
+        <span class="currency">₦100 per answer</span>
+      </div>
+      <div class="review">
+        <h3>Esther Anabel.</h3>
+        <p>"I love how easy it is to use QashOut. Payments are always on time."</p>
+        <span class="currency">₦80 per answer</span>
+      </div>
+      <div class="review">
+        <h3>Michael Oluchi.</h3>
+        <p>"Finally, a platform that rewards my time and effort. Highly recommended!"</p>
+        <span class="currency">₦50 per answer</span>
+      </div>
+      <div class="review">
+        <h3>Alice Merci.</h3>
+        <p>"Joining QashOut was the best decision. I’ve made a lot of money so far!"</p>
+        <span class="currency">₦100 per answer</span>
+      </div>
     </div>
   </div>
 
-  <!-- Firebase Setup -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 - 2060 QashOut. All rights reserved.</p>
+  </footer>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Profile</title>
-  <style>
-    /* Add your styling here (same as before)... */
-  </style>
-</head>
-<body>
-  <div class="profile-container">
-    <!-- Header -->
-    <div class="profile-header">
-      <input type="file" id="profile-picture-input" accept="image/*" style="display: none;">
-      <img id="profile-picture" src="https://via.placeholder.com/150" alt="User Profile Picture" onclick="uploadPicture()">
-      <h1 id="profile-name">John Doe</h1>
-      <p id="profile-description">Full Stack Developer | Tech Enthusiast</p>
-      <button class="logout-button" onclick="logout()">Logout</button>
-      <span class="edit-icon" onclick="editProfile()">✏️</span>
-    </div>
-
-    <!-- Body -->
-    <div class="profile-body">
-      <div class="info-card">
-        <h3>Contact Information</h3>
-        <p id="contact-info">Email: john.doe@example.com<br>Phone: +123-456-7890</p>
-        <span class="edit-icon" onclick="editCard('contact-info')">✏️</span>
-        <button onclick="redirectToContact()">Contact Us</button>
-      </div>
-      <div class="info-card">
-        <h3>About Me</h3>
-        <p id="about-me">Passionate developer with over 5 years of experience in building modern web applications.</p>
-        <span class="edit-icon" onclick="editCard('about-me')">✏️</span>
-      </div>
-      <div class="info-card">
-        <h3>Skills</h3>
-        <p id="skills">JavaScript, Python, React, Node.js, CSS, HTML, SQL</p>
-        <span class="edit-icon" onclick="editCard('skills')">✏️</span>
-      </div>
-      <div class="info-card">
-        <h3>Location</h3>
-        <p id="location">New York, USA</p>
-        <span class="edit-icon" onclick="editCard('location')">✏️</span>
-        <button onclick="redirectToPassword()">Change Passcode</button>
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="profile-footer">
-      <p>© 2024 John Doe. All rights reserved.</p>
-    </div>
-  </div>
-
-  <!-- Modal -->
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <h3>Edit Information</h3>
-      <input type="text" id="modal-input" placeholder="Enter new value">
-      <button onclick="saveChanges()">Save</button>
-      <button onclick="closeModal()">Cancel</button>
-    </div>
-  </div>
-
-  <!-- Firebase Setup -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBw_hJdW_4QIBajA5LJ78Wu1a0bTyyThI8",
-      authDomain: "techzone-c96c0.firebaseapp.com",
-      projectId: "techzone-c96c0",
-      storageBucket: "techzone-c96c0.firebasestorage.app",
-      messagingSenderId: "399698120752",
-      appId: "1:399698120752:web:40821d2140cd0d860a1df5",
-      measurementId: "G-Z7VFYH20LH"
-    };
-
-    let app, db;
-
-    try {
-      app = initializeApp(firebaseConfig);
-      db = getDatabase(app);
-      console.log("Firebase initialized successfully");
-    } catch (error) {
-      console.error("Firebase initialization failed:", error);
-      alert("Firebase failed to initialize. Some features may not work.");
-    }
-
-    function uploadPicture() {
-      document.getElementById("profile-picture-input").click();
-    }
-
-    document.getElementById("profile-picture-input").addEventListener("change", function (event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          document.getElementById("profile-picture").src = e.target.result;
-          alert("Picture uploaded successfully!");
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    function editCard(id) {
-      document.getElementById("modal-input").value = document.getElementById(id).textContent;
-      document.getElementById("modal").classList.add("active");
-      document.getElementById("modal-input").setAttribute("data-edit-id", id);
-    }
-
-    function saveChanges() {
-      const input = document.getElementById("modal-input");
-      const id = input.getAttribute("data-edit-id");
-      const newValue = input.value;
-
-      document.getElementById(id).textContent = newValue;
-
-      // Save changes to Firebase
-      if (db) {
-        const userRef = ref(db, "users/1");
-        set(userRef, { [id]: newValue }).catch(console.error);
-      }
-
-      closeModal();
-    }
-
-    function closeModal() {
-      document.getElementById("modal").classList.remove("active");
-    }
-
-    function logout() {
-      alert("Logging out...");
-      window.location.href = "login.html";
-    }
-
-    function redirectToContact() {
-      window.location.href = "contact.html";
-    }
-
-    function redirectToPassword() {
-      window.location.href = "password.html";
-    }
-  </script>
 </body>
 </html>
-￼Enter    const firebaseConfig = {
-      apiKey: "AIzaSyBw_hJdW_4QIBajA5LJ78Wu1a0bTyyThI8",
-      authDomain: "techzone-c96c0.firebaseapp.com",
-      projectId: "techzone-c96c0",
-      storageBucket: "techzone-c96c0.firebasestorage.app",
-      messagingSenderId: "399698120752",
-      appId: "1:399698120752:web:40821d2140cd0d860a1df5",
-      measurementId: "G-Z7VFYH20LH"
-    };
-
-    let app, db;
-
-    try {
-      app = initializeApp(firebaseConfig);
-      db = getDatabase(app);
-      console.log("Firebase initialized successfully");
-    } catch (error) {
-      console.error("Firebase initialization failed:", error);
-      alert("Firebase failed to initialize. Some features may not work.");
-    }
-
-    function uploadPicture() {
-      document.getElementById("profile-picture-input").click();
-    }
-
-    document.getElementById("profile-picture-input").addEventListener("change", function (event) {
-const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          document.getElementById("profile-picture").src = e.target.result;
-          alert("Picture uploaded successfully!");
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    function editCard(id) {
-      document.getElementById("modal-input").value = document.getElementById(id).textContent;
-      document.getElementById("modal").classList.add("active");
-      document.getElementById("modal-input").setAttribute("data-edit-id", id);
-    }
-
-    function saveChanges() {
-      const input = document.getElementById("modal-input");
-      const id = input.getAttribute("data-edit-id");
-      const newValue = input.value;
-
-      document.getElementById(id).textContent = newValue;
-
-      // Save changes to Firebase
-      if (db) {
