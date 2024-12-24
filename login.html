@@ -24,7 +24,7 @@
       overflow: hidden;
     }
 
-    /* Full-Screen Container */
+    /* Login Container */
     .login-container {
       background-color: #fff;
       padding: 30px;
@@ -124,7 +124,7 @@
   <script type="module">
     // Import Firebase SDKs
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+    import { getFirestore, collection, query, where, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
     // Firebase configuration
     const firebaseConfig = {
@@ -172,22 +172,28 @@
         return;
       }
 
-      const userDoc = querySnapshot.docs[0].data();
+      const userDoc = querySnapshot.docs[0];
+      const userData = userDoc.data();
 
-      if (userDoc.password !== passwordValue) {
+      if (userData.isLocked) {
+        errorMessage.textContent = "Your account is locked due to too many failed login attempts.";
+        return;
+      }
+
+      if (userData.password !== passwordValue) {
         loginAttempts++;
         if (loginAttempts >= 3) {
-          errorMessage.textContent = "Too many incorrect attempts. Account locked permanently.";
+          await updateDoc(doc(db, "users", userDoc.id), { isLocked: true });
+          errorMessage.textContent = "Too many incorrect attempts. Your account has been locked.";
           return;
         }
-        errorMessage.textContent = "Incorrect login. Please try again.";
+        errorMessage.textContent = `Incorrect login. ${3 - loginAttempts} attempts remaining.`;
         return;
       }
 
       // Successful login
       alert("Login successful!");
-      // Redirect to dashboard or home page
-      window.location.href = "dashboard.html";
+      window.location.href = "account.html";
     });
   </script>
 </body>
