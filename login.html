@@ -24,7 +24,7 @@
       overflow: hidden;
     }
 
-    /* Login Container */
+    /* Full-Screen Container */
     .login-container {
       background-color: #fff;
       padding: 30px;
@@ -145,7 +145,6 @@
     const userInput = document.getElementById('user-input');
     const passwordInput = document.getElementById('password');
     const errorMessage = document.getElementById('error-message');
-    let loginAttempts = 0;
 
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -167,6 +166,7 @@
       );
 
       const querySnapshot = await getDocs(q);
+
       if (querySnapshot.empty) {
         errorMessage.textContent = "Account not found. Please check your input or sign up.";
         return;
@@ -175,25 +175,34 @@
       const userDoc = querySnapshot.docs[0];
       const userData = userDoc.data();
 
+      // Check if account is locked
       if (userData.isLocked) {
-        errorMessage.textContent = "Your account is locked due to too many failed login attempts.";
+        errorMessage.textContent = "Account is locked. Please contact support.";
         return;
       }
 
+      // Verify password
       if (userData.password !== passwordValue) {
-        loginAttempts++;
-        if (loginAttempts >= 3) {
+        // Increment failed attempts
+        const failedAttempts = (userData.failedAttempts || 0) + 1;
+        await updateDoc(doc(db, "users", userDoc.id), { failedAttempts });
+
+        if (failedAttempts >= 3) {
           await updateDoc(doc(db, "users", userDoc.id), { isLocked: true });
-          errorMessage.textContent = "Too many incorrect attempts. Your account has been locked.";
+          errorMessage.textContent = "Too many incorrect attempts. Account locked.";
           return;
         }
-        errorMessage.textContent = `Incorrect login. ${3 - loginAttempts} attempts remaining.`;
+
+        errorMessage.textContent = "Incorrect login. Please try again.";
         return;
       }
+
+      // Reset failed attempts on successful login
+      await updateDoc(doc(db, "users", userDoc.id), { failedAttempts: 0 });
 
       // Successful login
       alert("Login successful!");
-      window.location.href = "account.html";
+      window.location.href = "account.html"; // Redirect to account page
     });
   </script>
 </body>
