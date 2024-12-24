@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="description" content="Answer questions and get paid for free. No hidden costs—get started now!">
+  <title>QuashOut - Sign Up</title>
+  <style>
+    /* Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Full-Screen Container */
+    .signup-container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+    }
+
+    /* Moving Welcome Message */
+    .welcome-message {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 20px;
+      font-weight: bold;
+      animation: scrollText 10s linear infinite;
+    }
+
+    @keyframes scrollText {
+      0% {
+        transform: translateX(100%);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+
+    .highlight {
+      color: #0066cc;
+      font-weight: bold;
+    }
+
+    /* Form Styles */
+    .signup-form {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+
+    .signup-form label {
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    .signup-form input {
+      padding: 12px;
+      margin-bottom: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      width: 100%;
+    }
+
+    .signup-form input:focus {
+      border-color: #0066cc;
+      outline: none;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    .signup-form button {
+      background-color: #0066cc;
+      color: #fff;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .signup-form button:hover {
+      background-color: #005bb5;
+    }
+
+    .login-redirect {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .login-redirect a {
+      color: #0066cc;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .login-redirect a:hover {
+      text-decoration: underline;
+    }
+
+    /* Disable Zoom on Mobile */
+    input[type="text"], input[type="email"], input[type="tel"] {
+      -webkit-text-size-adjust: 100%;
+      -webkit-user-modify: read-write-plaintext-only;
+    }
+  </style>
+</head>
+<body>
+  <div class="signup-container">
+    <div class="welcome-message">
+      Welcome to <span class="highlight">QuashOut</span>! Answer questions and get paid for free—no hidden costs. <span class="highlight">Get started now!</span>
+    </div>
+    <h2>Sign Up</h2>
+    <form id="signup-form" class="signup-form">
+      <label for="first-name">First Name</label>
+      <input type="text" id="first-name" name="first_name" placeholder="Enter your first name" required>
+
+      <label for="last-name">Last Name</label>
+      <input type="text" id="last-name" name="last_name" placeholder="Enter your last name" required>
+
+      <label for="nickname">Nickname</label>
+      <input type="text" id="nickname" name="nickname" placeholder="Enter your nickname" required>
+
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+      <div id="email-error" class="error-message"></div>
+
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" placeholder="Choose a username" required>
+      <div id="username-error" class="error-message"></div>
+
+      <label for="phone-number">Phone Number</label>
+      <div style="display: flex; align-items: center; gap: 5px;">
+        <input type="text" value="+234" readonly style="width: 60px; text-align: center; border-radius: 5px; border: 1px solid #ccc;">
+        <input type="tel" id="phone-number" name="phone_number" placeholder="10-digit number" pattern="[0-9]{10}" maxlength="10" required style="flex: 1;">
+      </div>
+      <div id="phone-error" class="error-message"></div>
+
+      <button type="submit">Sign Up</button>
+    </form>
+    <div class="login-redirect">
+      Already have an account? <a href="login.html">Log in here</a>
+    </div>
+  </div>
+
+  <script type="module">
+    // Import Firebase SDKs
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAdGNuGGMFVdjs7Xtczo632QN4T1w90N4k",
+      authDomain: "earn-83f8e.firebaseapp.com",
+      projectId: "earn-83f8e",
+      storageBucket: "earn-83f8e.firebasestorage.app",
+      messagingSenderId: "157245632323",
+      appId: "1:157245632323:web:980dab003618f7ddb049f6",
+      measurementId: "G-RSN065WNPE"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Form Elements
+    const emailInput = document.getElementById('email');
+    const usernameInput = document.getElementById('username');
+    const phoneInput = document.getElementById('phone-number');
+    const emailError = document.getElementById('email-error');
+    const usernameError = document.getElementById('username-error');
+    const phoneError = document.getElementById('phone-error');
+
+    // Check Firestore for existing user
+    async function checkIfExists(field, value, errorElement) {
+      const q = query(collection(db, 'users'), where(field, "==", value));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        errorElement.textContent = `${field} already exists!`;
+        return true;
+      } else {
+        errorElement.textContent = '';
+        return false;
+      }
+    }
+
+    // Real-time validation
+    emailInput.addEventListener('input', () => checkIfExists('email', emailInput.value, emailError));
+    usernameInput.addEventListener('input', () => checkIfExists('username', usernameInput.value, usernameError));
+    phoneInput.addEventListener('input', () => checkIfExists('phone_number', phoneInput.value, phoneError));
+
+    // Form Submission
+    document.getElementById('signup-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const firstName = document.getElementById('first-name').value;
+      const lastName = document.getElementById('last-name').value;
+      const nickname = document.getElementById('nickname').value;
+      const email = emailInput.value;
+      const username = usernameInput.value;
+      const phoneNumber = phoneInput.value;
+
+      // Ensure all fields are valid
+      const emailExists = await checkIfExists('email', email, emailError);
+      const usernameExists = await checkIfExists('username', username, usernameError);
+      const phoneExists = await checkIfExists('phone_number', phoneNumber, phoneError);
+
+      if (emailExists || usernameExists || phoneExists) return;
+
+      // Save to Firestore
+      const userDoc = doc(collection(db, 'users'));
+      await setDoc(userDoc, { firstName, lastName, nickname, email, username, phone_number: phoneNumber });
+      alert('Signup successful!');
+    });
+  </script>
+</body>
+</html>
