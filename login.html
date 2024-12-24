@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Log in to QuashOut - A platform to answer questions and get paid.">
+  <title>QuashOut - Login</title>
+  <style>
+    /* Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .login-container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+
+    .login-form label {
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    .login-form input {
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .login-form input:focus {
+      border-color: #0066cc;
+      outline: none;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    .login-form button {
+      background-color: #0066cc;
+      color: #fff;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .login-form button:hover {
+      background-color: #005bb5;
+    }
+
+    .forgot-password {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .forgot-password a {
+      color: #0066cc;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .forgot-password a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Login</h2>
+    <form id="login-form" class="login-form">
+      <label for="login-input">Email, Phone, or Username</label>
+      <input type="text" id="login-input" name="login_input" placeholder="Enter your email, phone, or username" required>
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" placeholder="Enter your password" required>
+      <div id="error-message" class="error-message"></div>
+      <button type="submit">Login</button>
+    </form>
+    <div class="forgot-password">
+      <a href="reset.html">Forgot Password?</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAdGNuGGMFVdjs7Xtczo632QN4T1w90N4k",
+      authDomain: "earn-83f8e.firebaseapp.com",
+      projectId: "earn-83f8e",
+      storageBucket: "earn-83f8e.firebasestorage.app",
+      messagingSenderId: "157245632323",
+      appId: "1:157245632323:web:980dab003618f7ddb049f6",
+      measurementId: "G-RSN065WNPE"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Form Submission
+    const loginForm = document.getElementById("login-form");
+    const errorMessage = document.getElementById("error-message");
+
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const loginInput = document.getElementById("login-input").value.trim();
+      const password = document.getElementById("password").value;
+
+      // Query Firestore for matching user
+      const usersCollection = collection(db, "users");
+      const q = query(usersCollection, 
+        where("email", "==", loginInput), 
+        where("username", "==", loginInput), 
+        where("phone_number", "==", loginInput)
+      );
+
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        errorMessage.textContent = "No account found with the provided details.";
+        return;
+      }
+
+      // Check for matching password
+      let isAuthenticated = false;
+      querySnapshot.forEach((doc) => {
+        const userData = doc.data();
+        if (userData.password === password) {
+          isAuthenticated = true;
+        }
+      });
+
+      if (isAuthenticated) {
+        alert("Login successful!");
+        // Redirect to dashboard or another page
+        window.location.href = "dashboard.html";
+      } else {
+        errorMessage.textContent = "Incorrect password. Try again.";
+      }
+    });
+  </script>
+</body>
+</html>
