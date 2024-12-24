@@ -234,7 +234,10 @@
       // Save to Firestore
       const userDoc = doc(collection(db, 'users'));
       await setDoc(userDoc, { firstName, lastName, nickname, email, username, phone_number: phoneNumber });
-      alert('Signup successful!');
+
+      // Redirect to account.html
+      alert('Signup successful! Redirecting to your account...');
+      window.location.href = 'account.html';
     });
   </script>
 </body>
