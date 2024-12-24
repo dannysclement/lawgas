@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Log in to QuashOut - A platform to answer questions and get paid.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="description" content="Log in to access your QuashOut account and start earning!">
   <title>QuashOut - Login</title>
   <style>
     /* Global Styles */
@@ -21,8 +21,10 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      overflow: hidden;
     }
 
+    /* Full-Screen Container */
     .login-container {
       background-color: #fff;
       padding: 30px;
@@ -33,10 +35,12 @@
       text-align: center;
     }
 
-    h2 {
+    .login-container h2 {
       margin-bottom: 20px;
+      color: #0066cc;
     }
 
+    /* Form Styles */
     .login-form {
       display: flex;
       flex-direction: column;
@@ -55,6 +59,7 @@
       border: 1px solid #ccc;
       border-radius: 5px;
       font-size: 16px;
+      width: 100%;
     }
 
     .login-form input:focus {
@@ -76,45 +81,48 @@
       border-radius: 5px;
       font-size: 16px;
       cursor: pointer;
+      margin-top: 10px;
     }
 
     .login-form button:hover {
       background-color: #005bb5;
     }
 
-    .forgot-password {
-      margin-top: 10px;
+    .redirect-links {
+      margin-top: 15px;
       font-size: 14px;
     }
 
-    .forgot-password a {
+    .redirect-links a {
       color: #0066cc;
       text-decoration: none;
       font-weight: bold;
     }
 
-    .forgot-password a:hover {
+    .redirect-links a:hover {
       text-decoration: underline;
     }
   </style>
 </head>
 <body>
   <div class="login-container">
-    <h2>Login</h2>
+    <h2>Log In</h2>
     <form id="login-form" class="login-form">
-      <label for="login-input">Email, Phone, or Username</label>
-      <input type="text" id="login-input" name="login_input" placeholder="Enter your email, phone, or username" required>
+      <label for="user-input">Email/Phone/Username</label>
+      <input type="text" id="user-input" placeholder="Enter email, phone, or username" required>
       <label for="password">Password</label>
-      <input type="password" id="password" name="password" placeholder="Enter your password" required>
+      <input type="password" id="password" placeholder="Enter your password" required>
       <div id="error-message" class="error-message"></div>
-      <button type="submit">Login</button>
+      <button type="submit">Log In</button>
     </form>
-    <div class="forgot-password">
-      <a href="reset.html">Forgot Password?</a>
+    <div class="redirect-links">
+      <p>Forgot password? <a href="reset.html">Reset here</a></p>
+      <p>Don't have an account? <a href="signup.html">Sign up now</a></p>
     </div>
   </div>
 
   <script type="module">
+    // Import Firebase SDKs
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
     import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
@@ -133,47 +141,53 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Form Submission
-    const loginForm = document.getElementById("login-form");
-    const errorMessage = document.getElementById("error-message");
+    const loginForm = document.getElementById('login-form');
+    const userInput = document.getElementById('user-input');
+    const passwordInput = document.getElementById('password');
+    const errorMessage = document.getElementById('error-message');
+    let loginAttempts = 0;
 
-    loginForm.addEventListener("submit", async (e) => {
+    loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const loginInput = document.getElementById("login-input").value.trim();
-      const password = document.getElementById("password").value;
+      const userValue = userInput.value.trim();
+      const passwordValue = passwordInput.value.trim();
 
-      // Query Firestore for matching user
-      const usersCollection = collection(db, "users");
-      const q = query(usersCollection, 
-        where("email", "==", loginInput), 
-        where("username", "==", loginInput), 
-        where("phone_number", "==", loginInput)
-      );
-
-      const querySnapshot = await getDocs(q);
-
-      if (querySnapshot.empty) {
-        errorMessage.textContent = "No account found with the provided details.";
+      if (!userValue || !passwordValue) {
+        errorMessage.textContent = "All fields are required.";
         return;
       }
 
-      // Check for matching password
-      let isAuthenticated = false;
-      querySnapshot.forEach((doc) => {
-        const userData = doc.data();
-        if (userData.password === password) {
-          isAuthenticated = true;
-        }
-      });
+      // Query Firestore to check user
+      const q = query(
+        collection(db, "users"),
+        where("email", "==", userValue),
+        where("phone_number", "==", userValue),
+        where("username", "==", userValue)
+      );
 
-      if (isAuthenticated) {
-        alert("Login successful!");
-        // Redirect to dashboard or another page
-        window.location.href = "dashboard.html";
-      } else {
-        errorMessage.textContent = "Incorrect password. Try again.";
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        errorMessage.textContent = "Account not found. Please check your input or sign up.";
+        return;
       }
+
+      const userDoc = querySnapshot.docs[0].data();
+
+      if (userDoc.password !== passwordValue) {
+        loginAttempts++;
+        if (loginAttempts >= 3) {
+          errorMessage.textContent = "Too many incorrect attempts. Account locked permanently.";
+          return;
+        }
+        errorMessage.textContent = "Incorrect login. Please try again.";
+        return;
+      }
+
+      // Successful login
+      alert("Login successful!");
+      // Redirect to dashboard or home page
+      window.location.href = "dashboard.html";
     });
   </script>
 </body>
