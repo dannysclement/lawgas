@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <meta name="description" content="Log in to access your QuashOut account and start earning!">
-  <title>QuashOut - Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - QuashOut</title>
   <style>
-    /* Global Styles */
+    /* General Styles */
     * {
       margin: 0;
       padding: 0;
@@ -15,23 +14,21 @@
 
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f4f9;
+      background-color: #f9f9f9;
       color: #333;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      overflow: hidden;
     }
 
-    /* Full-Screen Container */
     .login-container {
-      background-color: #fff;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 100%;
       max-width: 400px;
-      width: 90%;
       text-align: center;
     }
 
@@ -40,29 +37,26 @@
       color: #0066cc;
     }
 
-    /* Form Styles */
-    .login-form {
-      display: flex;
-      flex-direction: column;
+    .form-group {
+      margin-bottom: 15px;
       text-align: left;
     }
 
-    .login-form label {
-      margin-bottom: 5px;
+    .form-group label {
+      display: block;
+      font-size: 14px;
       font-weight: bold;
-      color: #555;
+      margin-bottom: 5px;
     }
 
-    .login-form input {
-      padding: 12px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 16px;
+    .form-group input {
       width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
     }
 
-    .login-form input:focus {
+    .form-group input:focus {
       border-color: #0066cc;
       outline: none;
     }
@@ -73,58 +67,63 @@
       margin-bottom: 15px;
     }
 
-    .login-form button {
-      background-color: #0066cc;
-      color: #fff;
-      padding: 12px;
+    .login-container button {
+      background: #0066cc;
+      color: white;
+      padding: 10px 15px;
       border: none;
       border-radius: 5px;
-      font-size: 16px;
       cursor: pointer;
       margin-top: 10px;
     }
 
-    .login-form button:hover {
-      background-color: #005bb5;
+    .login-container button:hover {
+      background: #005bb5;
     }
 
-    .redirect-links {
+    .additional-links {
       margin-top: 15px;
       font-size: 14px;
     }
 
-    .redirect-links a {
+    .additional-links a {
       color: #0066cc;
       text-decoration: none;
       font-weight: bold;
+      margin: 0 10px;
     }
 
-    .redirect-links a:hover {
+    .additional-links a:hover {
       text-decoration: underline;
     }
   </style>
 </head>
 <body>
   <div class="login-container">
-    <h2>Log In</h2>
-    <form id="login-form" class="login-form">
-      <label for="user-input">Email/Phone/Username</label>
-      <input type="text" id="user-input" placeholder="Enter email, phone, or username" required>
-      <label for="password">Password</label>
-      <input type="password" id="password" placeholder="Enter your password" required>
+    <h2>Login to Your Account</h2>
+    <form id="login-form">
+      <div class="form-group">
+        <label for="user-input">Email/Phone/Username</label>
+        <input type="text" id="user-input" placeholder="Enter email, phone, or username" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter password" required>
+      </div>
       <div id="error-message" class="error-message"></div>
       <button type="submit">Log In</button>
     </form>
-    <div class="redirect-links">
-      <p>Forgot password? <a href="reset.html">Reset here</a></p>
-      <p>Don't have an account? <a href="signup.html">Sign up now</a></p>
+    <div class="additional-links">
+      <a href="reset.html">Forgot Password?</a>
+      <a href="signup.html">Sign Up Here</a>
     </div>
+    <a href="chat.html" class="additional-links">Contact Support</a>
   </div>
 
   <script type="module">
-    // Import Firebase SDKs
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
     // Firebase configuration
     const firebaseConfig = {
@@ -140,11 +139,13 @@
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth(app);
 
     const loginForm = document.getElementById('login-form');
     const userInput = document.getElementById('user-input');
     const passwordInput = document.getElementById('password');
     const errorMessage = document.getElementById('error-message');
+    let loginAttempts = 0;
 
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -157,52 +158,43 @@
         return;
       }
 
-      // Query Firestore to check user
-      const q = query(
-        collection(db, "users"),
-        where("email", "==", userValue),
-        where("phone_number", "==", userValue),
-        where("username", "==", userValue)
-      );
+      // Query Firestore for the user
+      const userRef = doc(db, "users", userValue); // Assuming userValue is a unique key (like email/username/phone)
+      const userSnap = await getDoc(userRef);
 
-      const querySnapshot = await getDocs(q);
-
-      if (querySnapshot.empty) {
-        errorMessage.textContent = "Account not found. Please check your input or sign up.";
+      if (!userSnap.exists()) {
+        errorMessage.textContent = "Account not found. Please sign up or contact support.";
         return;
       }
 
-      const userDoc = querySnapshot.docs[0];
-      const userData = userDoc.data();
+      const userData = userSnap.data();
 
-      // Check if account is locked
-      if (userData.isLocked) {
-        errorMessage.textContent = "Account is locked. Please contact support.";
+      if (userData.locked) {
+        errorMessage.textContent = "Account locked. Please contact support.";
         return;
       }
 
-      // Verify password
+      // Check the password
       if (userData.password !== passwordValue) {
-        // Increment failed attempts
-        const failedAttempts = (userData.failedAttempts || 0) + 1;
-        await updateDoc(doc(db, "users", userDoc.id), { failedAttempts });
-
-        if (failedAttempts >= 3) {
-          await updateDoc(doc(db, "users", userDoc.id), { isLocked: true });
-          errorMessage.textContent = "Too many incorrect attempts. Account locked.";
+        loginAttempts++;
+        if (loginAttempts >= 3) {
+          // Lock the account in Firestore
+          await updateDoc(userRef, { locked: true });
+          errorMessage.textContent = "Account locked. Please contact support.";
           return;
         }
-
-        errorMessage.textContent = "Incorrect login. Please try again.";
+        errorMessage.textContent = "Incorrect password. Please try again.";
         return;
       }
 
-      // Reset failed attempts on successful login
-      await updateDoc(doc(db, "users", userDoc.id), { failedAttempts: 0 });
-
-      // Successful login
-      alert("Login successful!");
-      window.location.href = "account.html"; // Redirect to account page
+      // Log in the user with Firebase Authentication
+      try {
+        await signInWithEmailAndPassword(auth, userData.email, passwordValue);
+        alert("Login successful!");
+        window.location.href = "account.html"; // Redirect to account page
+      } catch (err) {
+        errorMessage.textContent = "An error occurred during login. Please try again.";
+      }
     });
   </script>
 </body>
