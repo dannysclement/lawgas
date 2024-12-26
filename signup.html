@@ -17,40 +17,39 @@
       font-family: Arial, sans-serif;
       background-color: #f4f4f9;
       color: #333;
+      margin: 0;
+    }
+
+    /* Scrollable Container */
+    .container {
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      overflow: hidden;
+      min-height: 100vh;
+      padding: 20px;
     }
 
-    /* Full-Screen Container */
     .signup-container {
       background-color: #fff;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       max-width: 400px;
-      width: 90%;
+      width: 100%;
+      overflow-y: auto;
+    }
+
+    h2 {
       text-align: center;
+      margin-bottom: 15px;
+      color: #0066cc;
     }
 
-    /* Moving Welcome Message */
     .welcome-message {
-      font-size: 16px;
+      font-size: 14px;
       color: #555;
+      text-align: center;
       margin-bottom: 20px;
-      font-weight: bold;
-      animation: scrollText 10s linear infinite;
-    }
-
-    @keyframes scrollText {
-      0% {
-        transform: translateX(100%);
-      }
-      100% {
-        transform: translateX(-100%);
-      }
     }
 
     .highlight {
@@ -62,21 +61,20 @@
     .signup-form {
       display: flex;
       flex-direction: column;
-      text-align: left;
     }
 
     .signup-form label {
+      font-size: 14px;
       margin-bottom: 5px;
-      font-weight: bold;
       color: #555;
     }
 
     .signup-form input {
-      padding: 12px;
-      margin-bottom: 5px;
+      padding: 10px;
+      margin-bottom: 15px;
       border: 1px solid #ccc;
       border-radius: 5px;
-      font-size: 16px;
+      font-size: 14px;
       width: 100%;
     }
 
@@ -87,19 +85,19 @@
 
     .error-message {
       color: red;
-      font-size: 14px;
-      margin-bottom: 15px;
+      font-size: 12px;
+      margin-top: -10px;
+      margin-bottom: 10px;
     }
 
     .signup-form button {
       background-color: #0066cc;
       color: #fff;
-      padding: 12px;
+      padding: 10px;
       border: none;
       border-radius: 5px;
-      font-size: 16px;
+      font-size: 14px;
       cursor: pointer;
-      margin-top: 10px;
     }
 
     .signup-form button:hover {
@@ -107,6 +105,7 @@
     }
 
     .login-redirect {
+      text-align: center;
       margin-top: 15px;
       font-size: 14px;
     }
@@ -121,55 +120,59 @@
       text-decoration: underline;
     }
 
-    /* Disable Zoom on Mobile */
-    input[type="text"], input[type="email"], input[type="tel"], input[type="password"] {
-      -webkit-text-size-adjust: 100%;
-      -webkit-user-modify: read-write-plaintext-only;
+    /* Scrollable Container for Smaller Screens */
+    @media (max-height: 600px) {
+      .signup-container {
+        max-height: 90vh;
+        overflow-y: auto;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="signup-container">
-    <div class="welcome-message">
-      Welcome to <span class="highlight">QuashOut</span>! Answer questions and get paid for free—no hidden costs. <span class="highlight">Get started now!</span>
-    </div>
-    <h2>Sign Up</h2>
-    <form id="signup-form" class="signup-form">
-      <label for="first-name">First Name</label>
-      <input type="text" id="first-name" name="first_name" placeholder="Enter your first name" required>
-
-      <label for="last-name">Last Name</label>
-      <input type="text" id="last-name" name="last_name" placeholder="Enter your last name" required>
-
-      <label for="nickname">Nickname</label>
-      <input type="text" id="nickname" name="nickname" placeholder="Enter your nickname" required>
-
-      <label for="email">Email Address</label>
-      <input type="email" id="email" name="email" placeholder="Enter your email address" required>
-      <div id="email-error" class="error-message"></div>
-
-      <label for="username">Username</label>
-      <input type="text" id="username" name="username" placeholder="Choose a username" required>
-      <div id="username-error" class="error-message"></div>
-
-      <label for="phone-number">Phone Number</label>
-      <div style="display: flex; align-items: center; gap: 5px;">
-        <input type="text" value="+234" readonly style="width: 60px; text-align: center; border-radius: 5px; border: 1px solid #ccc;">
-        <input type="tel" id="phone-number" name="phone_number" placeholder="10-digit number" pattern="[0-9]{10}" maxlength="10" required style="flex: 1;">
+  <div class="container">
+    <div class="signup-container">
+      <h2>Sign Up</h2>
+      <div class="welcome-message">
+        Welcome to <span class="highlight">QuashOut</span>! Answer questions and get paid for free—no hidden costs. <span class="highlight">Get started now!</span>
       </div>
-      <div id="phone-error" class="error-message"></div>
+      <form id="signup-form" class="signup-form">
+        <label for="first-name">First Name</label>
+        <input type="text" id="first-name" name="first_name" placeholder="Enter your first name" required>
 
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" placeholder="Enter your password" required>
+        <label for="last-name">Last Name</label>
+        <input type="text" id="last-name" name="last_name" placeholder="Enter your last name" required>
 
-      <label for="confirm-password">Confirm Password</label>
-      <input type="password" id="confirm-password" name="confirm_password" placeholder="Confirm your password" required>
-      <div id="password-error" class="error-message"></div>
+        <label for="nickname">Nickname</label>
+        <input type="text" id="nickname" name="nickname" placeholder="Enter your nickname" required>
 
-      <button type="submit">Sign Up</button>
-    </form>
-    <div class="login-redirect">
-      Already have an account? <a href="login.html">Log in here</a>
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+        <div id="email-error" class="error-message"></div>
+
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Choose a username" required>
+        <div id="username-error" class="error-message"></div>
+
+        <label for="phone-number">Phone Number</label>
+        <div style="display: flex; align-items: center; gap: 5px;">
+          <input type="text" value="+234" readonly style="width: 60px; text-align: center; border-radius: 5px; border: 1px solid #ccc;">
+          <input type="tel" id="phone-number" name="phone_number" placeholder="10-digit number" pattern="[0-9]{10}" maxlength="10" required style="flex: 1;">
+        </div>
+        <div id="phone-error" class="error-message"></div>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+        <label for="confirm-password">Confirm Password</label>
+        <input type="password" id="confirm-password" name="confirm_password" placeholder="Confirm your password" required>
+        <div id="password-error" class="error-message"></div>
+
+        <button type="submit">Sign Up</button>
+      </form>
+      <div class="login-redirect">
+        Already have an account? <a href="login.html">Log in here</a>
+      </div>
     </div>
   </div>
 
@@ -207,7 +210,7 @@
     const phoneError = document.getElementById('phone-error');
     const passwordError = document.getElementById('password-error');
 
-    // Check Firestore for existing user
+    // Real-time validation
     async function checkIfExists(field, value, errorElement) {
       const q = query(collection(db, 'users'), where(field, "==", value));
       const querySnapshot = await getDocs(q);
@@ -220,53 +223,39 @@
       }
     }
 
-    // Real-time validation
     emailInput.addEventListener('input', () => checkIfExists('email', emailInput.value, emailError));
     usernameInput.addEventListener('input', () => checkIfExists('username', usernameInput.value, usernameError));
     phoneInput.addEventListener('input', () => checkIfExists('phone_number', phoneInput.value, phoneError));
 
-    // Form Submission
     signupForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const firstName = document.getElementById('first-name').value;
-      const lastName = document.getElementById('last-name').value;
-      const nickname = document.getElementById('nickname').value;
-      const email = emailInput.value;
-      const username = usernameInput.value;
-      const phoneNumber = phoneInput.value;
-      const password = passwordInput.value;
-      const confirmPassword = confirmPasswordInput.value;
-
-      // Validate Passwords Match
-      if (password !== confirmPassword) {
-        passwordError.textContent = 'Passwords do not match!';
-        return;
-      } else {
-        passwordError.textContent = '';
-      }
-
-      // Check for existing details
-      const emailExists = await checkIfExists('email', email, emailError);
-      const usernameExists = await checkIfExists('username', username, usernameError);
-      const phoneExists = await checkIfExists('phone_number', phoneNumber, phoneError);
+      const emailExists = await checkIfExists('email', emailInput.value, emailError);
+      const usernameExists = await checkIfExists('username', usernameInput.value, usernameError);
+      const phoneExists = await checkIfExists('phone_number', phoneInput.value, phoneError);
 
       if (emailExists || usernameExists || phoneExists) return;
 
-      // Register user in Firebase Authentication and Firestore
+      if (passwordInput.value !== confirmPasswordInput.value) {
+        passwordError.textContent = 'Passwords do not match!';
+        return;
+      }
+
+      passwordError.textContent = '';
+
       try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
         const user = userCredential.user;
 
         // Store user data in Firestore
         await addDoc(collection(db, 'users'), {
           uid: user.uid,
-          first_name: firstName,
-          last_name: lastName,
-          nickname: nickname,
-          email,
-          username,
-          phone_number: phoneNumber
+          first_name: signupForm.first_name.value,
+          last_name: signupForm.last_name.value,
+          nickname: signupForm.nickname.value,
+          email: emailInput.value,
+          username: usernameInput.value,
+          phone_number: phoneInput.value
         });
 
         // Redirect to account page
