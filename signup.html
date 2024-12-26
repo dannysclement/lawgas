@@ -33,7 +33,6 @@
       max-width: 400px;
       width: 90%;
       text-align: center;
-      position: relative;
     }
 
     /* Moving Welcome Message */
@@ -103,11 +102,6 @@
       margin-top: 10px;
     }
 
-    .signup-form button:disabled {
-      background-color: #999;
-      cursor: not-allowed;
-    }
-
     .signup-form button:hover {
       background-color: #005bb5;
     }
@@ -128,7 +122,7 @@
     }
 
     /* Disable Zoom on Mobile */
-    input[type="text"], input[type="email"], input[type="tel"] {
+    input[type="text"], input[type="email"], input[type="tel"], input[type="password"] {
       -webkit-text-size-adjust: 100%;
       -webkit-user-modify: read-write-plaintext-only;
     }
@@ -165,7 +159,14 @@
       </div>
       <div id="phone-error" class="error-message"></div>
 
-      <button type="submit" id="signup-button" disabled>Sign Up</button>
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+      <label for="confirm-password">Confirm Password</label>
+      <input type="password" id="confirm-password" name="confirm_password" placeholder="Confirm your password" required>
+      <div id="password-error" class="error-message"></div>
+
+      <button type="submit">Sign Up</button>
     </form>
     <div class="login-redirect">
       Already have an account? <a href="login.html">Log in here</a>
@@ -199,14 +200,12 @@
     const emailInput = document.getElementById('email');
     const usernameInput = document.getElementById('username');
     const phoneInput = document.getElementById('phone-number');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirm-password');
     const emailError = document.getElementById('email-error');
     const usernameError = document.getElementById('username-error');
     const phoneError = document.getElementById('phone-error');
-    const signupButton = document.getElementById('signup-button');
-
-    let isEmailValid = false;
-    let isUsernameValid = false;
-    let isPhoneValid = false;
+    const passwordError = document.getElementById('password-error');
 
     // Check Firestore for existing user
     async function checkIfExists(field, value, errorElement) {
@@ -214,32 +213,17 @@
       const querySnapshot = await getDocs(q);
       if (!querySnapshot.empty) {
         errorElement.textContent = `${field} already exists!`;
-        return false;
+        return true;
       } else {
         errorElement.textContent = '';
-        return true;
+        return false;
       }
     }
 
     // Real-time validation
-    emailInput.addEventListener('input', async () => {
-      isEmailValid = await checkIfExists('email', emailInput.value, emailError);
-      toggleSubmitButton();
-    });
-
-    usernameInput.addEventListener('input', async () => {
-      isUsernameValid = await checkIfExists('username', usernameInput.value, usernameError);
-      toggleSubmitButton();
-    });
-
-    phoneInput.addEventListener('input', async () => {
-      isPhoneValid = await checkIfExists('phone_number', phoneInput.value, phoneError);
-      toggleSubmitButton();
-    });
-
-    function toggleSubmitButton() {
-      signupButton.disabled = !(isEmailValid && isUsernameValid && isPhoneValid);
-    }
+    emailInput.addEventListener('input', () => checkIfExists('email', emailInput.value, emailError));
+    usernameInput.addEventListener('input', () => checkIfExists('username', usernameInput.value, usernameError));
+    phoneInput.addEventListener('input', () => checkIfExists('phone_number', phoneInput.value, phoneError));
 
     // Form Submission
     signupForm.addEventListener('submit', async (e) => {
@@ -251,10 +235,27 @@
       const email = emailInput.value;
       const username = usernameInput.value;
       const phoneNumber = phoneInput.value;
+      const password = passwordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
 
+      // Validate Passwords Match
+      if (password !== confirmPassword) {
+        passwordError.textContent = 'Passwords do not match!';
+        return;
+      } else {
+        passwordError.textContent = '';
+      }
+
+      // Check for existing details
+      const emailExists = await checkIfExists('email', email, emailError);
+      const usernameExists = await checkIfExists('username', username, usernameError);
+      const phoneExists = await checkIfExists('phone_number', phoneNumber, phoneError);
+
+      if (emailExists || usernameExists || phoneExists) return;
+
+      // Register user in Firebase Authentication and Firestore
       try {
-        // Create user in Firebase Authentication
-        const userCredential = await createUserWithEmailAndPassword(auth, email, "defaultPassword123");
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
         // Store user data in Firestore
@@ -268,11 +269,10 @@
           phone_number: phoneNumber
         });
 
-        // Redirect to account.html
+        // Redirect to account page
         window.location.href = 'account.html';
       } catch (error) {
-        console.error('Error signing up:', error.message);
-        alert('Failed to sign up: ' + error.message);
+        alert('Error signing up: ' + error.message);
       }
     });
   </script>
